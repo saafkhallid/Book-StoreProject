@@ -49,6 +49,80 @@ app.get("/books", async (request, response) => {
   }
 });
 
+// ✅ Route pour récupérer un livres
+app.get("/books/:id", async (request, response) => {
+  try {
+    const { id } = request.params;
+    const book = await Book.findById(id);
+    return response.status(200).json(book);
+  } catch (error) {
+    console.error(error.message);
+    response.status(500).json({ success: false, message: error.message });
+  }
+});
+// ✅ Route pour modifier un livres
+app.put("/books/:id", async (request, response) => {
+  try {
+    const { titre, author, publishYear } = request.body;
+
+    if (!titre || !author || !publishYear) {
+      return response.status(400).json({
+        success: false,
+        message: "Tous les champs sont requis: titre, author, publishYear",
+      });
+    }
+
+    const { id } = request.params;
+    const result = await Book.findByIdAndUpdate(id, request.body, {
+      new: true,
+    });
+
+    if (!result) {
+      return response.status(404).json({
+        success: false,
+        message: "Book not found",
+      });
+    }
+
+    return response.status(200).json({
+      success: true,
+      message: "Book updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.error(error.message);
+    return response.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+// ✅ Route pour supprimer un livres
+app.delete("/books/:id", async (request, response) => {
+  try {
+      const { id } = request.params;
+      const result = await Book.findByIdAndDelete(id);
+    if (!result) {
+      return response.status(404).json({
+        success: false,
+        message: "Book not found",
+      });
+    }
+    return response.status(200).json({
+      success: true,
+      message: "Book delete successfully",
+      data: result,
+    });
+
+
+  } catch (error) {
+    return response.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 // Connexion à MongoDB
 mongoose
   .connect(mongoDBURL)

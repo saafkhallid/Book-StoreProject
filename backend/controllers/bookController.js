@@ -1,10 +1,7 @@
-import express from "express";
 import { Book } from "../models/bookModel.js";
 
-const router = express.Router();
-
 // ✅ Route pour sauvegarder un nouveau livre
-router.post("/", async (request, response) => {
+export const createBook = async (request, response) => {
   try {
     const { titre, author, publishYear } = request.body;
 
@@ -27,10 +24,10 @@ router.post("/", async (request, response) => {
     console.error(error.message);
     response.status(500).json({ success: false, message: error.message });
   }
-});
+};
 
 // ✅ Route pour récupérer tous les livres
-router.get("/", async (request, response) => {
+export const getallBook = async (request, response) => {
   try {
     const books = await Book.find({});
     return response.status(200).json({
@@ -42,10 +39,10 @@ router.get("/", async (request, response) => {
     console.error(error.message);
     response.status(500).json({ success: false, message: error.message });
   }
-});
+};
 
 // ✅ Route pour récupérer un livres
-router.get("/:id", async (request, response) => {
+export const getoneBook = async (request, response) => {
   try {
     const { id } = request.params;
     const book = await Book.findById(id);
@@ -54,9 +51,9 @@ router.get("/:id", async (request, response) => {
     console.error(error.message);
     response.status(500).json({ success: false, message: error.message });
   }
-});
+};
 // ✅ Route pour modifier un livres
-router.put("/:id", async (request, response) => {
+export const updateBook = async (request, response) => {
   try {
     const { titre, author, publishYear } = request.body;
 
@@ -91,9 +88,9 @@ router.put("/:id", async (request, response) => {
       message: error.message,
     });
   }
-});
+};
 // ✅ Route pour supprimer un livres
-router.delete("/:id", async (request, response) => {
+export const deleteBook = async (request, response) => {
   try {
     const { id } = request.params;
     const result = await Book.findByIdAndDelete(id);
@@ -114,5 +111,6 @@ router.delete("/:id", async (request, response) => {
       message: error.message,
     });
   }
-});
-export default router;
+};
+
+// export default { getallBook, getoneBook, deleteBook, createBook, updateBook };
